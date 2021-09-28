@@ -16,15 +16,17 @@
 
 - name: 'Install epel repository'
   package:
-    name: epel-release
-    state: present
-  when: ansible_distribution|lower == 'centos'
+    name:  'epel-release'
+    state: 'present'
+  when: ansible_distribution|lower == 'centos' or
+        ansible_distribution|lower == 'rocky'
 
 - name: 'Update epel repository'
   package:
-    name: epel-release
-    state: latest
-  when: ansible_distribution|lower == 'centos'
+    name:  'epel-release'
+    state: 'latest'
+  when: ansible_distribution|lower == 'centos' or
+        ansible_distribution|lower == 'rocky'
 
 
 # epel requires PowerTools, HA (and more) repos to be activated:
@@ -36,14 +38,17 @@
   register: 'powertools_repo'
   changed_when: false
   failed_when: false
-  when: ansible_distribution|lower == 'centos'
+  when: ansible_distribution|lower == 'centos' or
+        ansible_distribution|lower == 'rocky'
   args:
     warn: false # disable warning to use dnf module
 
 - name: 'Enable PowerTools'
   command:
     cmd: 'dnf config-manager --enable {{ powertools_repo_name }}'
-  when: ansible_distribution|lower == 'centos' and powertools_repo.rc != 0
+  when: (ansible_distribution|lower == 'centos' or
+        ansible_distribution|lower == 'rocky') and
+        powertools_repo.rc != 0
   args:
     warn: false # disable warning to use dnf module
 ...
