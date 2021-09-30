@@ -1,0 +1,6 @@
+---
+# Install epel on RHEL
+epel_install_epel: true
+
+epel_pkg: 'epel-release'
+...

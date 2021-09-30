@@ -1,54 +1,46 @@
 ---
-- name: 'Include OS specific variables'
-  include_vars: '{{ lookup("first_found", possible_files) }}'
-  vars:
-    possible_files:
-      - 'vars/{{ ansible_distribution | lower }}{{ ansible_distribution_version }}.yml'
-      - 'vars/{{ ansible_distribution | lower }}{{ ansible_distribution_major_version }}.yml'
-      - 'vars/{{ ansible_distribution | lower }}.yml'
-      - 'vars/{{ ansible_os_family | lower }}.yml'
-      - 'vars/default.yml'
-      #  |  ubuntu18.04.yml
-      #  |  ubuntu18.yml
-      #  |  ubuntu.yml
-      #  |  debian.yml
-      #  v  default.yml
+- name: 'Load distribution specific settings for epel repository'
+  include_vars: '{{ var_file }}'
+  failed_when: false
+  loop_control:
+    loop_var: 'var_file'
+  loop:
+    - 'vars/{{ ansible_os_family | lower }}.yml'
+    - 'vars/{{ ansible_distribution | lower }}.yml'
+    - 'vars/{{ ansible_distribution | lower }}{{ ansible_distribution_major_version }}.yml'
+    - 'vars/{{ ansible_distribution | lower }}{{ ansible_distribution_version }}.yml'
+    #  |  debian.yml       |  redhat.yml
+    #  |  ubuntu.yml       |  centos.yml
+    #  |  ubuntu18.yml     |  centos8.yml
+    #  v  ubuntu18.04.yml  |  centos8.4.yml
 
-- name: 'Install epel repository'
-  package:
-    name:  'epel-release'
-    state: 'present'
-  when: ansible_distribution|lower == 'centos' or
-        ansible_distribution|lower == 'rocky'
-
-- name: 'Update epel repository'
-  package:
-    name:  'epel-release'
-    state: 'latest'
-  when: ansible_distribution|lower == 'centos' or
-        ansible_distribution|lower == 'rocky'
+- block:
+    - name: 'Install epel repository'
+      package:
+        name:  '{{ epel_pkg }}'
+        state: 'present'
+    - name: 'Update epel repository'
+      package:
+        name:  '{{ epel_pkg }}'
+        state: 'latest'
+  when: 'epel_install_epel | bool'
 
 
 # epel requires PowerTools, HA (and more) repos to be activated:
 #   https://fedoraproject.org/wiki/EPEL#Quickstart
 
-- name: 'Check if PowerTools repo is enabled'
-  shell:
-    cmd: 'dnf repolist --enabled | grep "^{{ powertools_repo_name }}[ \t]*"'
-  register: 'powertools_repo'
-  changed_when: false
-  failed_when: false
-  when: ansible_distribution|lower == 'centos' or
-        ansible_distribution|lower == 'rocky'
-  args:
-    warn: false # disable warning to use dnf module
-
-- name: 'Enable PowerTools'
-  command:
-    cmd: 'dnf config-manager --enable {{ powertools_repo_name }}'
-  when: (ansible_distribution|lower == 'centos' or
-        ansible_distribution|lower == 'rocky') and
-        powertools_repo.rc != 0
-  args:
-    warn: false # disable warning to use dnf module
+- block:
+    - name: 'Check if PowerTools repo is enabled'
+      shell:
+        cmd: 'dnf repolist --enabled | grep "^{{ epel_powertools_repo_name }}[ \t]*"'
+        warn: false
+      changed_when: false
+      failed_when: false
+      register: '_epel_powertools_repo_check'
+    - name: 'Enable PowerTools'
+      command:
+        cmd: 'dnf config-manager --enable {{ epel_powertools_repo_name }}'
+        warn: false
+      when: '_epel_powertools_repo_check.rc != 0'
+  when: 'epel_install_epel | bool'
 ...
