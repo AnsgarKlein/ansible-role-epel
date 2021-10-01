@@ -43,4 +43,10 @@
         warn: false
       when: '_epel_powertools_repo_check.rc != 0'
   when: 'epel_install_epel | bool'
+
+# Set variable to indicate that epel has already been installed
+# (This is useful if this role gets included multiple times in a playbook run)
+- name: 'Save variable to indicate epel has been installed'
+  set_fact:
+    epel_install_epel: false
 ...
