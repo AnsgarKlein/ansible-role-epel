@@ -1,0 +1,15 @@
+# Generic editor
+*~
+*.bak
+
+# vim
+*.swp
+Session.vim
+Sessionx.vim
+.netrwhist
+
+# virtualenv
+env/
+venv/
+.env/
+.venv/
