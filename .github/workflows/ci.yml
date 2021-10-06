@@ -1,0 +1,51 @@
+name: CI
+
+on:
+  - push
+  - pull_request
+
+jobs:
+  yamllint:
+    name: Lint with yamllint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Install yamllint
+        run: |
+          python3 -m venv venv
+          source venv/bin/activate
+          python3 -m pip install --no-input --upgrade pip
+          python3 -m pip install --no-input yamllint
+
+      - name: Lint with yamllint
+        run: |
+          source venv/bin/activate
+
+          echo '::group::yamllint-standard'
+          yamllint --format=standard . || true
+          echo '::endgroup::'
+
+          echo '::group::yamllint-github'
+          yamllint --format=github .
+          echo '::endgroup::'
+
+  ansible-lint:
+    name: Lint with ansible-lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Install ansible-lint
+        run: |
+          python3 -m venv venv
+          source venv/bin/activate
+          python3 -m pip install --no-input --upgrade pip
+          python3 -m pip install --no-input ansible ansible-lint
+
+      - name: Lint with ansible-lint
+        run: |
+          source venv/bin/activate
+          ansible-lint
