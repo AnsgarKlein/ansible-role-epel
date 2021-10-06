@@ -6,6 +6,7 @@ ignore: |
   venv/
   .env/
   .venv/
+  .ansible-lint
   .yamllint
 
 rules:
