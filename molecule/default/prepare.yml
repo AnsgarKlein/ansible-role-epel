@@ -1,0 +1,11 @@
+---
+- name: Prepare
+  hosts: all
+  gather_facts: true
+  tasks:
+    - command:
+        cmd: dnf remove epel-release
+      ignore_errors: true
+
+    - shell:
+        cmd: rm -f /etc/yum.repos.d/epel*.repo
