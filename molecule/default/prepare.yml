@@ -3,9 +3,21 @@
   hosts: all
   gather_facts: true
   tasks:
-    - command:
-        cmd: dnf remove epel-release
+    - name: Uninstall epel-release package
+      ansible.builtin.command:
+        cmd: 'dnf remove -y epel-release'
+      ignore_errors: true
+      when: ansible_facts['pkg_mgr'] == 'dnf'
+
+    - name: Remove epel repository definitions
+      ansible.builtin.shell:
+        cmd: rm -f /etc/yum.repos.d/epel*.repo
       ignore_errors: true
 
-    - shell:
-        cmd: rm -f /etc/yum.repos.d/epel*.repo
+    - name: Disable other repositories
+      ansible.builtin.command:
+        cmd: 'dnf config-manager --set-disabled {{ item }}'
+      loop:
+        - powertools
+        - crb
+      ignore_errors: true

@@ -1,0 +1,19 @@
+---
+- name: Get currently enabled repositories
+  ansible.builtin.shell:
+    cmd: >-
+      set -o pipefail &&
+      dnf --cacheonly repolist --enabled
+      | tail -n +2
+      | cut -d " " -f1
+  environment:
+    LC_ALL: C
+  changed_when: false
+  register: '_epel_currently_enabled_repos'
+
+- name: Enable prerequisites repositories
+  ansible.builtin.command:
+    cmd: 'dnf config-manager --set-enabled {{ item }}'
+  changed_when: true
+  when: 'item not in _epel_currently_enabled_repos.stdout_lines'
+  loop: '{{ epel_prerequisites_repos_enable }}'

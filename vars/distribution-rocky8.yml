@@ -1,1 +1,4 @@
-redhat8.yml
+---
+# List of repos to enable as prerequisites for EPEL
+epel_prerequisites_repos_enable:
+  - 'powertools'

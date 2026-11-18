@@ -1,2 +1,4 @@
 ---
-epel_powertools_repo_name: 'PowerTools'
+# Whether the distribution supports EPEL at all
+# RHEL-7 does not support epel anymore since it is end-of-life
+epel_supported: false

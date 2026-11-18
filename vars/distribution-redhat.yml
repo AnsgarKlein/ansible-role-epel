@@ -1,5 +1,6 @@
 ---
-# Install epel on RHEL
-epel_install_epel: true
+# Whether the distribution supports EPEL at all
+epel_supported: true
 
-epel_pkg: 'epel-release'
+# Name of package to install to enable epel
+epel_repo_pkg: 'epel-release'

@@ -1,0 +1,5 @@
+---
+- name: Install epel repository package
+  ansible.builtin.package:
+    name: '{{ epel_repo_pkg }}'
+    state: 'present'

@@ -1,0 +1,34 @@
+---
+- name: Verify
+  hosts: all
+  gather_facts: true
+  tasks:
+    - name: Check if system has dnf command
+      ansible.builtin.shell:
+        cmd: 'command -v dnf'
+      failed_when: false
+      changed_when: false
+      register: _dnf_check
+
+    - name: Check if epel repository is enabled
+      when: _dnf_check.rc == 0
+      block:
+        - name: List currently enabled repositories
+          ansible.builtin.shell:
+            executable: /bin/bash
+            cmd: >-
+              set -o pipefail &&
+              dnf --cacheonly repolist --enabled
+              | tail -n +2
+              | cut -d " " -f1
+          environment:
+            LC_ALL: C
+          changed_when: false
+          register: '_currently_enabled_repos'
+
+        - name: Check if epel repository is enabled
+          ansible.builtin.assert:
+            that:
+              - "'epel' in _currently_enabled_repos.stdout_lines"
+            fail_msg: 'EPEL repository is not enabled'
+            success_msg: 'EPEL repository is enabled'

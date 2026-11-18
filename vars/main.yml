@@ -1,6 +1,1 @@
 ---
-# Whether to install epel at all
-epel_supported: false
-
-# Package name of epel repository
-epel_pkg: 'epel'

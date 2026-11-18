@@ -3,6 +3,7 @@
   ansible.builtin.include_vars: '{{ item }}'
   failed_when: false
   loop:
+    - "vars/distribution-default.yml"
     - "vars/distribution-\
       {{ ansible_distribution | lower | regex_replace(' ', '') }}\
       .yml"
@@ -15,41 +16,10 @@
       {{ ansible_distribution_version }}\
       .yml"
 
-- name: Set up epel repository
-  when: 'epel_install_epel | bool'
-  block:
-    - name: Install epel repository
-      ansible.builtin.package:
-        name: '{{ epel_pkg }}'
-        state: 'present'
+- name: Set up prerequisites repositories
+  ansible.builtin.import_tasks: setup_prerequisites_repos.yml
+  when: epel_supported | bool
 
-    - name: Update epel repository
-      ansible.builtin.package:
-        name: '{{ epel_pkg }}'
-        state: 'latest'
-
-
-# epel requires PowerTools, HA (and more) repos to be activated:
-#   https://fedoraproject.org/wiki/EPEL#Quickstart
-
-- name: Set up PowerTools repository
-  when: 'epel_install_epel | bool'
-  block:
-    - name: Check if PowerTools repo is enabled
-      ansible.builtin.shell:
-        cmd: 'dnf repolist --enabled | grep "^{{ epel_powertools_repo_name }}[ \t]*"'
-      changed_when: false
-      failed_when: false
-      register: '_epel_powertools_repo_check'
-
-    - name: Enable PowerTools
-      ansible.builtin.command:
-        cmd: "dnf config-manager --enable '{{ epel_powertools_repo_name }}'"
-      changed_when: true
-      when: '_epel_powertools_repo_check.rc != 0'
-
-# Set variable to indicate that epel has already been installed
-# (This is useful if this role gets included multiple times in a playbook run)
-- name: Save variable to indicate epel has been installed
-  ansible.builtin.set_fact:
-    epel_install_epel: false
+- name: Enable epel repository
+  ansible.builtin.import_tasks: enable_epel.yml
+  when: epel_supported | bool
