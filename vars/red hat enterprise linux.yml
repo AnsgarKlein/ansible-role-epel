@@ -3,4 +3,3 @@
 epel_install_epel: true
 
 epel_pkg: 'epel-release'
-...

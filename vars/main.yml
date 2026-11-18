@@ -4,4 +4,3 @@ epel_install_epel: false
 
 # Package name of epel repository
 epel_pkg: 'epel'
-...

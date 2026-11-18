@@ -1,15 +1,10 @@
-# Generic editor
-*~
-*.bak
+# Python environment
+/.env/
+/.venv/
+/env/
+/venv/
+/ENV/
+/VENV/
 
-# vim
-*.swp
-Session.vim
-Sessionx.vim
-.netrwhist
-
-# virtualenv
-env/
-venv/
-.env/
-.venv/
+# Ansible
+.ansible

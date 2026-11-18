@@ -1,0 +1,8 @@
+---
+- name: Converge
+  hosts: all
+  gather_facts: true
+  tasks:
+    - name: Apply role
+      ansible.builtin.include_role:  # noqa: role-name
+        name: '{{ playbook_dir }}/../../'

@@ -1,8 +1,2 @@
-exclude_paths:
-  - .github/
-  - env/
-  - venv/
-  - .env/
-  - .venv/
-  - .ansible-lint
-  - .yamllint
+---
+profile: production
