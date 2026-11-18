@@ -3,10 +3,17 @@
   ansible.builtin.include_vars: '{{ item }}'
   failed_when: false
   loop:
-    - 'vars/{{ ansible_os_family | lower }}.yml'
-    - 'vars/{{ ansible_distribution | lower }}.yml'
-    - 'vars/{{ ansible_distribution | lower }}{{ ansible_distribution_major_version }}.yml'
-    - 'vars/{{ ansible_distribution | lower }}{{ ansible_distribution_version }}.yml'
+    - "vars/distribution-\
+      {{ ansible_distribution | lower | regex_replace(' ', '') }}\
+      .yml"
+    - "vars/distribution-\
+      {{ ansible_distribution | lower | regex_replace(' ', '') }}\
+      {{ ansible_distribution_major_version }}\
+      .yml"
+    - "vars/distribution-\
+      {{ ansible_distribution | lower | regex_replace(' ', '') }}\
+      {{ ansible_distribution_version }}\
+      .yml"
 
 - name: Set up epel repository
   when: 'epel_install_epel | bool'
