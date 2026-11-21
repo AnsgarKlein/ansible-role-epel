@@ -1,5 +1,5 @@
 ---
-- name: Load distribution specific variables for cron
+- name: Load distribution specific variables
   ansible.builtin.include_vars: '{{ item }}'
   failed_when: false
   loop:
