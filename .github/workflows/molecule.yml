@@ -1,0 +1,33 @@
+---
+name: Molecule
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  molecule:
+    name: Molecule test
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Set up Python
+        uses: actions/setup-python@v7
+        with:
+          python-version-file: .python-version
+
+      - name: Install requirements via pip
+        run: pip install -r requirements.txt
+
+      - name: Run molecule test
+        run: |
+          molecule list
+          molecule test
