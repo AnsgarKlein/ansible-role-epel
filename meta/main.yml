@@ -1,8 +1,8 @@
 ---
 galaxy_info:
   role_name: epel
+  author: AnsgarKlein
   namespace: ansgarklein
-  author: Ansgar Klein
   description: Set up EPEL repository on supported systems
 
   # If the issue tracker for your role is not on github, uncomment the
