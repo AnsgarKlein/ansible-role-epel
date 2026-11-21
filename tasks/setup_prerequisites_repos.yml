@@ -1,4 +1,11 @@
 ---
+# We need to make sure the config-manager plugin for dnf is installed
+# to ensure we can execute `dnf config-manager` to manage repos
+- name: Install dnf config-manager
+  ansible.builtin.package:
+    name: '{{ epel_dnf_config_manager_pkg }}'
+    state: present
+
 - name: Get currently enabled repositories
   ansible.builtin.shell:
     cmd: >-

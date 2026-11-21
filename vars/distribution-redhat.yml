@@ -4,3 +4,5 @@ epel_supported: true
 
 # Name of package to install to enable epel
 epel_repo_pkg: 'epel-release'
+
+epel_dnf_config_manager_pkg: 'dnf-plugins-core'
