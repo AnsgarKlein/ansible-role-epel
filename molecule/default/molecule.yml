@@ -5,7 +5,7 @@ driver:
 
 platforms:
   - name: rockylinux8
-    image: geerlingguy/docker-rockylinux8-ansible:latest
+    image: ansgarklein/moleculetest-rockylinux8:latest
     pre_build_image: true
     command: '/sbin/init'
     volumes:
@@ -14,7 +14,7 @@ platforms:
     privileged: true
 
   - name: rockylinux9
-    image: geerlingguy/docker-rockylinux9-ansible:latest
+    image: ansgarklein/moleculetest-rockylinux9:latest
     pre_build_image: true
     command: '/sbin/init'
     volumes:
@@ -23,7 +23,7 @@ platforms:
     privileged: true
 
   - name: rockylinux10
-    image: geerlingguy/docker-rockylinux10-ansible:latest
+    image: ansgarklein/moleculetest-rockylinux10:latest
     pre_build_image: true
     command: '/sbin/init'
     volumes:
@@ -31,8 +31,8 @@ platforms:
     cgroupns_mode: host
     privileged: true
 
-  - name: ubuntu2404
-    image: geerlingguy/docker-ubuntu2404-ansible:latest
+  - name: ubuntu2604
+    image: ansgarklein/moleculetest-ubuntu2604:latest
     pre_build_image: true
     command: '/sbin/init'
     volumes:
